@@ -1,8 +1,32 @@
-﻿#######################################################
-# Este script realiza el levantamiento de informacion #
-# de Active Directory, DNS y GPOs. Adicional ayuda a  #
-# la construccion del documento de diseño.            #
-#######################################################
+﻿#########################################################################
+# This script provides information about Active Directory, DNS, GPOs: 	#
+##### ACTIVE DIRECTORY INFO #####									 	#
+# * Get FSMO Roles														#
+# * Get Replication Type												#
+# * Get Forest															#
+# * Get Domain															#
+# * Get Domain Controllers												#
+#* Get OUs Structure													#
+#* Get Users															#
+#* Get Computers														#
+#* Get Groups and Members												#
+#* Get Replication State												#
+#* Get Sites & Subnets													#		
+#* Replicate Connetion													#
+#* Get Site Link														#
+#* Get ADTrust															#
+#* Get NTP																#
+#																		#
+##### DNS INFO #####													#
+#* Get DNS Zones														#
+#* Get DNS Forwarders													#
+#* Get Conditional Forwarders											#
+#																		#
+##### GPOs INFO #####													#
+#* Get GPOs																#
+#* Export GPOs to HTML													#
+#* Backup GPOs															#
+#########################################################################
 
 # Import modules from Active Directory and Group Policy
 Import-Module activedirectory
@@ -61,14 +85,14 @@ $usersList | export-csv $loc’Users.csv’ -NoTypeInformation -Encoding Unicode
 Write-Output "`n" ">> COMPUTERS (Computers.csv)" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 Get-ADComputer -Filter * -Property * -searchbase $dn_computers | Select-Object Name,DistinguishedName,OperatingSystem,OperatingSystemVersion,ipv4Address,Enabled,LastLogonDate,@{n='LastLogonDays';e={(New-TimeSpan $_.LastLogonDate $(Get-Date)).Days}} | export-csv $loc'Computers.csv' -NoTypeInformation -Encoding Unicode
 
-# Get Groups
-Write-Output "`n" ">> GROUPS (Groups.csv)" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# Get Groups and Members
+Write-Output "`n" ">> GROUPS & MEMBERS (Groups.csv)" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 #// Start of script
 #// Get year and month for csv export file
 #// $DateTime = Get-Date -f "yyyy-MM"
 
 #// Set CSV file name
-$CSVFile = $loc+"Groups"+".csv"
+$CSVFile = $loc+"Groups&Members"+".csv"
 
 #// Create emy array for CSV data
 $CSVOutput = @()
@@ -160,9 +184,9 @@ W32tm /query /peers| Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 ##### DNS INFO #####
 
-Write-Output  "`n" "*********** DNS ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Write-Output  "`n" "*********** DNS INFO ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
-# Get DNS Information
+# Get DNS Zones
 Write-Output ">> DNS ZONES" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 Get-DnsServerZone -ComputerName $dc_servername | Select-Object Zonename,ZoneType,IsDsIntegrated | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
@@ -185,7 +209,7 @@ $list | ForEach-Object {
 
 ##### GPOs INFO #####
 
-Write-Output  "`n" "***	******** GPOs ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Write-Output  "`n" "***	******** GPOs INFO ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get GPOs
 Write-Output ">> GPOs - Export CSV (gpos.csv)" "`n" | Out-File  $loc’Active_Directory_LDI.txt’ -Append
