@@ -4,17 +4,25 @@
 # la construccion del documento de diseño.            #
 #######################################################
 
-# Crear Folder donde se almacenara la info
-New-Item "C:\AD_LDI" -itemType Directory
+# Import modules from Active Directory and Group Policy
+Import-Module activedirectory
+Import-Module grouppolicy
 
 # Variables
-$loc = "C:\tmp\"
-$dn = ‘DC=ivti,DC=loc’
+$loc = "C:\AD_LDI\"
+$dn_users = ‘OU=Bogota,DC=ivti,DC=loc’
+$dn_computers = ‘OU=Bogota,DC=ivti,DC=loc’
+$ous_specific = ‘OU=Servers,DC=ivti,DC=loc’
+$dns_servername = "dc1601.ivti.loc"
 
 
-### ACTIVE DIRECTORY ###
+# Create folder where the info will be stored
+New-Item "C:\AD_LDI\" -itemType Directory
 
-Write "********** ACTIVE DIRECTORY ***********" "`n" | Out-File $loc’Active_Directory_LDI.txt’
+
+### ACTIVE DIRECTORY INFO ###
+
+Write "********** ACTIVE DIRECTORY INFO ***********" "`n" | Out-File $loc’Active_Directory_LDI.txt’
 # Get FSMO Roles
 Write ">> FSMO ROLES" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 netdom query fsmo | Out-File $loc’Active_Directory_LDI.txt’ -Append
@@ -34,29 +42,21 @@ Get-ADDomain | select name,dnsroot,domainmode,pdcemulator,ridmaster,infrastructu
 
 # Get Domain Controllers
 Write ">> DOMAIN CONTROLLERS" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-$getdomain = [System.Directoryservices.Activedirectory.Domain]::GetCurrentDomain() 
-$getdomain | ForEach-Object {$_.DomainControllers} |  
-ForEach-Object { 
-  $hEntry= [System.Net.Dns]::GetHostByName($_.Name) 
-  New-Object -TypeName PSObject -Property @{ 
-      Name = $_.Name 
-      IPAddress = $hEntry.AddressList[0].IPAddressToString 
-     } 
-} | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Get-ADDomainController -Filter * | select hostname,IPv4Address,OperatingSystem,OperatingSystemVersion | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 
 # Get OUs Structure
 Write "`n" ">> OUs STRUCTURE" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADOrganizationalUnit -filter * | select Name,DistinguishedName | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Get-ADOrganizationalUnit -Filter * -SearchBase $ous_specific | select Name,DistinguishedName | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get Users
 Write "`n" ">> USERS (Users.csv)" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-$usersList = Get-ADUser -Filter * -searchbase $dn -Properties * | Select Name,DistinguishedName,@{n='OrganizationalUnit';e={$_.distinguishedName -replace '^.+?,(CN|OU|DC.+)','$1'}},SamAccountName,Enabled,LastLogonDate,@{n='LastLogonDays';e={(New-TimeSpan $_.LastLogonDate $(Get-Date)).Days}},PasswordLastSet,@{n='PasswordAge';e={(New-TimeSpan $_.PasswordLastSet $(Get-Date)).Days}},PasswordNeverExpires,SID
+$usersList = Get-ADUser -Filter * -searchbase $dn_users -Properties * -SearchScope Subtree | Select Name,DistinguishedName,@{n='OrganizationalUnit';e={$_.distinguishedName -replace '^.+?,(CN|OU|DC.+)','$1'}},SamAccountName,Enabled,LastLogonDate,@{n='LastLogonDays';e={(New-TimeSpan $_.LastLogonDate $(Get-Date)).Days}},PasswordLastSet,@{n='PasswordAge';e={(New-TimeSpan $_.PasswordLastSet $(Get-Date)).Days}},PasswordNeverExpires,SID
 $usersList | export-csv $loc’Users.csv’ -NoTypeInformation -Encoding Unicode
 
 # Get Computers
 Write "`n" ">> COMPUTERS (Computers.csv)" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADComputer -Filter * -Property * | Select Name,DistinguishedName,OperatingSystem,OperatingSystemVersion,ipv4Address,Enabled,LastLogonDate,@{n='LastLogonDays';e={(New-TimeSpan $_.LastLogonDate $(Get-Date)).Days}} | export-csv $loc'Computers.csv' -NoTypeInformation -Encoding Unicode
+Get-ADComputer -Filter * -Property * -searchbase $dn_computers | Select Name,DistinguishedName,OperatingSystem,OperatingSystemVersion,ipv4Address,Enabled,LastLogonDate,@{n='LastLogonDays';e={(New-TimeSpan $_.LastLogonDate $(Get-Date)).Days}} | export-csv $loc'Computers.csv' -NoTypeInformation -Encoding Unicode
 
 # Get Groups
 Write "`n" ">> GROUPS (Groups.csv)" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
