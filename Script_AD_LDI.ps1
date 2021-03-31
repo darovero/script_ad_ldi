@@ -153,21 +153,26 @@ Write ">> NTP" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 W32tm /query /peers| Out-File $loc’Active_Directory_LDI.txt’ -Append
 				
 
-### DNS ###
+### DNS INFO ###
 
 Write  "`n" "*********** DNS ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get DNS Information
 Write ">> DNS ZONES" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-DnsServerZone | select Zonename,ZoneType,IsDsIntegrated | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Get-DnsServerZone -ComputerName $dns_servername | select Zonename,ZoneType,IsDsIntegrated | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get DNS Forwarders
 Write ">> DNS Forwarders" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-DnsServerForwarder | select IPAddress | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Get-DnsServerForwarder -ComputerName $dns_servername | select IPAddress | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get Condicional Forwarders
-Write ">> CONDITIONAL FORWARDERS" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-gwmi -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Zone -Filter "ZoneType = 4" |Select -Property @{n='Name';e={$_.ContainerName}}, @{n='DsIntegrated';e={$_.DsIntegrated}}, @{n='MasterServers';e={([string]::Join(',', $_.MasterServers))}} | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Write ">> CONDITIONAL FORWARDERS" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+$list = (Get-ADForest).GlobalCatalogs
+$list | % {
+	$dcname = $_
+	$dcname
+	gwmi -computername $dcname -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Zone -Filter "ZoneType = 4" | Select -Property @{n='Name';e={$_.ContainerName}}, @{n='DsIntegrated';e={$_.DsIntegrated}}, @{n='MasterServers';e={([string]::Join(',', $_.MasterServers))}} | ft 
+} | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 
 ### GPOs ###
