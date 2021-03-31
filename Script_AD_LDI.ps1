@@ -13,14 +13,17 @@ $loc = "C:\AD_LDI\"
 $dn_users = ‘OU=Bogota,DC=ivti,DC=loc’
 $dn_computers = ‘OU=Bogota,DC=ivti,DC=loc’
 $ous_specific = ‘OU=Servers,DC=ivti,DC=loc’
-$dns_servername = "dc1601.ivti.loc"
+$dc_servername = "dc1601.ivti.loc"
 
 
 # Create folder where the info will be stored
 New-Item "C:\AD_LDI\" -itemType Directory
 
+# Start Event Log
+Start-Transcript ("C:\AD_LDI\ad_ldi_Log {0:yyyyMMdd - HHmm}.txt" -f (Get-Date))
 
-### ACTIVE DIRECTORY INFO ###
+
+##### ACTIVE DIRECTORY INFO #####
 
 Write "********** ACTIVE DIRECTORY INFO ***********" "`n" | Out-File $loc’Active_Directory_LDI.txt’
 # Get FSMO Roles
@@ -29,8 +32,8 @@ netdom query fsmo | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get Replication Type
 Write ">> REPLICATION TYPE" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-Service DFSR | select Name,DisplayName,Status | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-Service NTFSR | select Name,DisplayName,Status | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Get-Service DFSR -ComputerName $dc_servername | select Name,DisplayName,Status | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Get-Service NTFSR -ComputerName $dc_servername | select Name,DisplayName,Status | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get Forest
 Write ">> FOREST" | Out-File $loc’Active_Directory_LDI.txt’ -Append
@@ -153,17 +156,19 @@ Write ">> NTP" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 W32tm /query /peers| Out-File $loc’Active_Directory_LDI.txt’ -Append
 				
 
-### DNS INFO ###
+
+
+##### DNS INFO #####
 
 Write  "`n" "*********** DNS ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get DNS Information
 Write ">> DNS ZONES" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-DnsServerZone -ComputerName $dns_servername | select Zonename,ZoneType,IsDsIntegrated | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Get-DnsServerZone -ComputerName $dc_servername | select Zonename,ZoneType,IsDsIntegrated | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get DNS Forwarders
 Write ">> DNS Forwarders" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-DnsServerForwarder -ComputerName $dns_servername | select IPAddress | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Get-DnsServerForwarder -ComputerName $dc_servername | select IPAddress | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 # Get Condicional Forwarders
 Write ">> CONDITIONAL FORWARDERS" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
@@ -175,7 +180,10 @@ $list | % {
 } | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
 
-### GPOs ###
+
+
+
+##### GPOs INFO #####
 
 Write  "`n" "***	******** GPOs ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 
@@ -192,3 +200,7 @@ Get-GPO -all | % { Get-GPOReport -GUID $_.id -ReportType HTML -Path "$loc\GPOs_H
 Write ">> Backup GPOs (Folder GPOs_BK)" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
 New-Item -ItemType Directory -Force -Path $loc\GPOs_BK
 Get-GPO -All | Backup-GPO -Path $loc\GPOs_BK
+
+
+#Stop Event Log
+Stop-Transcript
