@@ -1,31 +1,31 @@
 ﻿#########################################################################
-# This script provides information about Active Directory, DNS, GPOs: 	#
-##### ACTIVE DIRECTORY INFO #####									 	#
-# * Get FSMO Roles														#
-# * Get Replication Type												#
-# * Get Forest															#
-# * Get Domain															#
-# * Get Domain Controllers												#
-#* Get OUs Structure													#
-#* Get Users															#
-#* Get Computers														#
-#* Get Groups and Members												#
-#* Get Replication State												#
-#* Get Sites & Subnets													#		
-#* Replicate Connetion													#
-#* Get Site Link														#
-#* Get ADTrust															#
-#* Get NTP																#
-#																		#
-##### DNS INFO #####													#
-#* Get DNS Zones														#
-#* Get DNS Forwarders													#
-#* Get Conditional Forwarders											#
-#																		#
-##### GPOs INFO #####													#
-#* Get GPOs																#
-#* Export GPOs to HTML													#
-#* Backup GPOs															#
+# This script provides information about Active Directory, DNS, GPOs:
+##### ACTIVE DIRECTORY INFO #####
+# * Get FSMO Roles
+# * Get Replication Type
+# * Get Forest
+# * Get Domain
+# * Get Domain Controllers
+#* Get OUs Structure
+#* Get Users
+#* Get Computers
+#* Get Groups and Members
+#* Get Replication State
+#* Get Sites & Subnets
+#* Replicate Connetion
+#* Get Site Link
+#* Get ADTrust
+#* Get NTP
+#
+##### DNS INFO #####
+#* Get DNS Zones
+#* Get DNS Forwarders
+#* Get Conditional Forwarders
+#
+##### GPOs INFO #####
+#* Get GPOs
+#* Export GPOs to HTML
+#* Backup GPOs
 #########################################################################
 
 # Import modules from Active Directory and Group Policy
