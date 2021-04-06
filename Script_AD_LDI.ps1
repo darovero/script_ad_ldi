@@ -30,75 +30,84 @@
 # * Backup GPOs
 #########################################################################
 
-# Import modules from Active Directory and Group Policy
+# VARIABLES
+
+# Define the path where the information is stored
+$loc = "C:\AD_LDI\"
+# Define the file name with extension .txt
+$doc = "Active_Directory_LDI.txt"
+# Define the OU organizational unit or the tree root where users are stored. You must enter the Distinguished Names (example: Tree Root "DC = ivti, DC = loc" or OU specifies "OU = Bogota, DC = ivti, DC = loc")
+$dn_users = ‘OU=Bogota,DC=ivti,DC=loc’
+# Define the OU organizational unit or the tree root where computers are stored. You must enter the Distinguished Names (example: Tree Root "DC = ivti, DC = loc" or OU specifies "OU = Bogota, DC = ivti, DC = loc")
+$dn_computers = ‘OU=Bogota,DC=ivti,DC=loc’
+# Define the OU organizational unit or the tree root of the structure of the OUs. You must enter the Distinguished Names (example: Tree Root "DC = ivti, DC = loc" or OU specifies "OU = Servers, DC = ivti, DC = loc")
+$ous_structure = ‘OU=Servers,DC=ivti,DC=loc’
+# Define the Domain Controller to which you are going to connect to extract the information (It is recommended that it be the DC that has the FSMO PDC Role).
+$dc_servername = "dc1601.ivti.loc"
+
+# IMPORT MODULES FROM ACTIVE DIRECTORY AND GROUP POLICY
 Import-Module activedirectory
 Import-Module grouppolicy
 
-# Variables
-$loc = "C:\AD_LDI\"
-$dn_users = ‘OU=Bogota,DC=ivti,DC=loc’
-$dn_computers = ‘OU=Bogota,DC=ivti,DC=loc’
-$ous_specific = ‘OU=Servers,DC=ivti,DC=loc’
-$dc_servername = "dc1601.ivti.loc"
 
-
-# Create folder where the info will be stored
+# CREATE FOLDER WHERE THE INFORMATION WILL BE STORED
 New-Item "C:\AD_LDI\" -itemType Directory
 
-# Start Event Log
+# START EVENT LOG
 Start-Transcript ("C:\AD_LDI\ad_ldi_Log {0:yyyyMMdd - HHmm}.txt" -f (Get-Date))
 
 
 ##### ACTIVE DIRECTORY INFO #####
 
-Write-Output "********** ACTIVE DIRECTORY INFO ***********" "`n" | Out-File $loc’Active_Directory_LDI.txt’
-# Get FSMO Roles
-Write-Output ">>>> FSMO ROLES <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADDomainController -Filter * | Select-Object Name, Domain, Forest, OperationMasterRoles | Where-Object {$_.OperationMasterRoles} | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Write-Output "********** ACTIVE DIRECTORY INFO ***********" "`n" | Out-File $loc$doc
 
-# Get Replication Type
-Write-Output "`n" ">>>> REPLICATION TYPE <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET FSMO ROLES
+Write-Output ">>>> FSMO ROLES <<<<" "`n" | Out-File $loc$doc -Append
+Get-ADDomainController -Filter * | Select-Object Name, Domain, Forest, OperationMasterRoles | Where-Object {$_.OperationMasterRoles} | Out-File $loc$doc -Append
+
+# GET REPLICATION TYPE
+Write-Output "`n" ">>>> REPLICATION TYPE <<<<" "`n" | Out-File $loc$doc -Append
 $servicename = "DFSR"
 if (Get-Service $servicename -ComputerName $dc_servername -ErrorAction SilentlyContinue)
 {
-    Write-Output "$servicename Replication Running" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+    Write-Output "$servicename Replication Running" | Out-File $loc$doc -Append
 }
 
 else {
-    Write-Output "$servicename not found" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+    Write-Output "$servicename not found" | Out-File $loc$doc -Append
 }
 
-# Get Forest
-Write-Output "`n" "`n" ">>>> FOREST <<<<" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADForest | Select-Object name,rootdomain,forestmode,schemamaster,domainnamingmaster,domains,globalcatalogs | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET FOREST
+Write-Output "`n" "`n" ">>>> FOREST <<<<" | Out-File $loc$doc -Append
+Get-ADForest | Select-Object name,rootdomain,forestmode,schemamaster,domainnamingmaster,domains,globalcatalogs | Out-File $loc$doc -Append
 
-# Get Domain
-Write-Output ">>>> DOMAIN <<<<" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADDomain | Select-Object name,dnsroot,domainmode,pdcemulator,ridmaster,infrastructuremaster,netbiosname,childdomains,ReplicaDirectoryServers | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET DOMAIN
+Write-Output ">>>> DOMAIN <<<<" | Out-File $loc$doc -Append
+Get-ADDomain | Select-Object name,dnsroot,domainmode,pdcemulator,ridmaster,infrastructuremaster,netbiosname,childdomains,ReplicaDirectoryServers | Out-File $loc$doc -Append
 
-# Get Domain Controllers
-Write-Output ">>>> DOMAIN CONTROLLERS <<<<" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADDomainController -Filter * | Select-Object hostname,IPv4Address,OperatingSystem,OperatingSystemVersion | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET DOMAIN CONTROLLERS
+Write-Output ">>>> DOMAIN CONTROLLERS <<<<" | Out-File $loc$doc -Append
+Get-ADDomainController -Filter * | Select-Object hostname,IPv4Address,OperatingSystem,OperatingSystemVersion | Out-File $loc$doc -Append
 
-# Get Optional Features
-Write-Output ">>>> OPTIONAL FEATURES <<<<" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADOptionalFeature -Server $dc_servername -filter * | Select-Object name  | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET OPTIONAL FEATURES
+Write-Output ">>>> OPTIONAL FEATURES <<<<" | Out-File $loc$doc -Append
+Get-ADOptionalFeature -Server $dc_servername -filter * | Select-Object name  | Out-File $loc$doc -Append
 
-# Get OUs Structure
-Write-Output "`n" ">>>> OUs STRUCTURE <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADOrganizationalUnit -Filter * -SearchBase $ous_specific | Select-Object Name,DistinguishedName | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GT OUs STRUCTURE
+Write-Output "`n" ">>>> OUs STRUCTURE <<<<" "`n" | Out-File $loc$doc -Append
+Get-ADOrganizationalUnit -Filter * -SearchBase $ous_structure | Select-Object Name,DistinguishedName | Out-File $loc$doc -Append
 
-# Get Users
-Write-Output "`n" ">>>> USERS (Export to Users.csv) <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET USERS
+Write-Output "`n" ">>>> USERS (Export to Users.csv) <<<<" "`n" | Out-File $loc$doc -Append
 $usersList = Get-ADUser -Filter * -searchbase $dn_users -Properties * -SearchScope Subtree | Select-Object Name,DistinguishedName,@{n='OrganizationalUnit';e={$_.distinguishedName -replace '^.+?,(CN|OU|DC.+)','$1'}},SamAccountName,Enabled,LastLogonDate,@{n='LastLogonDays';e={(New-TimeSpan $_.LastLogonDate $(Get-Date)).Days}},PasswordLastSet,@{n='PasswordAge';e={(New-TimeSpan $_.PasswordLastSet $(Get-Date)).Days}},PasswordNeverExpires,SID
 $usersList | export-csv $loc’Users.csv’ -NoTypeInformation -Encoding Unicode
 
-# Get Computers
-Write-Output "`n" ">>>> COMPUTERS (Export to Computers.csv) <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET COMPUTERS
+Write-Output "`n" ">>>> COMPUTERS (Export to Computers.csv) <<<<" "`n" | Out-File $loc$doc -Append
 Get-ADComputer -Filter * -Property * -searchbase $dn_computers | Select-Object Name,DistinguishedName,OperatingSystem,OperatingSystemVersion,ipv4Address,Enabled,LastLogonDate,@{n='LastLogonDays';e={(New-TimeSpan $_.LastLogonDate $(Get-Date)).Days}} | export-csv $loc'Computers.csv' -NoTypeInformation -Encoding Unicode
 
-# Get Groups and Members
-Write-Output "`n" ">>>> GROUPS & MEMBERS (Export to Groups.csv) <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET GROUPS AND MEMBERS
+Write-Output "`n" ">>>> GROUPS & MEMBERS (Export to Groups.csv) <<<<" "`n" | Out-File $loc$doc -Append
 #// Start of script #// Get year and month for csv export file #// $DateTime = Get-Date -f "yyyy-MM"
 
 #// Set CSV file name
@@ -150,12 +159,12 @@ $CSVOutput | Sort-Object Name | Export-Csv $CSVFile -NoTypeInformation
 
 #// End of script
 
-# Get Replication Status
-Write-Output "`n" ">>>> REPLICATION STATUS <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-repadmin /replsum | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET REPLICATION STATUS
+Write-Output "`n" ">>>> REPLICATION STATUS <<<<" "`n" | Out-File $loc$doc -Append
+repadmin /replsum | Out-File $loc$doc -Append
 
-# Get Sites & Subnets
-Write-Output "`n" "`n" ">>>> SITES & SUBNETS (Export to subnet.csv) <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET SITES & SUBNETS
+Write-Output "`n" "`n" ">>>> SITES & SUBNETS (Export to subnet.csv) <<<<" "`n" | Out-File $loc$doc -Append
 
 $sites = [System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest().Sites
  
@@ -173,45 +182,45 @@ foreach ($site in $sites)
  
 $sitesubnets | Export-CSV $loc’subnet.csv’ -NoTypeInformation -Encoding Unicode
 
-# Replicate Connetion 
-Write-Output "`n" "`n" ">>>> REPLICATE CONNECTION (Export to Repl_Connetion.csv) <<<<" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# REPLICATE CONNETION 
+Write-Output "`n" "`n" ">>>> REPLICATE CONNECTION (Export to Repl_Connetion.csv) <<<<" "`n" "`n" | Out-File $loc$doc -Append
 Get-ADReplicationConnection -Filter * | Select-Object autogenerated,name,replicatefromdirectoryserver,replicatetodirectoryserver | Export-CSV $loc’Repl_Connetion.csv’ -NoTypeInformation -Encoding Unicode
  
-# Get Site Link
-Write-Output "`n" "`n" ">>>> SITE LINK <<<<"  "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADReplicationSiteLink -Filter * | Select-Object name,cost,replicationfrequencyinminutes  | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET SITE LINK
+Write-Output "`n" "`n" ">>>> SITE LINK <<<<"  "`n" | Out-File $loc$doc -Append
+Get-ADReplicationSiteLink -Filter * | Select-Object name,cost,replicationfrequencyinminutes  | Out-File $loc$doc -Append
 
-# Get ADTrust
-Write-Output "`n" "`n" ">>>> AD TRUST <<<<"  "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-ADTrust -Filter * | Select-Object Name,source,target,direction | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET AD TRUST
+Write-Output "`n" "`n" ">>>> AD TRUST <<<<"  "`n" | Out-File $loc$doc -Append
+Get-ADTrust -Filter * | Select-Object Name,source,target,direction | Out-File $loc$doc -Append
 
-# Get NTP
-Write-Output ">>>> NTP <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-w32tm /query /computer:$dc_servername /peers | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET NTP
+Write-Output ">>>> NTP <<<<" "`n" | Out-File $loc$doc -Append
+w32tm /query /computer:$dc_servername /peers | Out-File $loc$doc -Append
 				
 
 
 
 ##### DNS INFO #####
 
-Write-Output  "`n" "`n" "*********** DNS INFO ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Write-Output  "`n" "`n" "*********** DNS INFO ***********" "`n" "`n" | Out-File $loc$doc -Append
 
-# Get DNS Zones
-Write-Output "`n" ">>>> DNS ZONES <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-DnsServerZone -ComputerName $dc_servername | Select-Object Zonename,ZoneType,IsDsIntegrated | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET DNS ZONES
+Write-Output "`n" ">>>> DNS ZONES <<<<" "`n" | Out-File $loc$doc -Append
+Get-DnsServerZone -ComputerName $dc_servername | Select-Object Zonename,ZoneType,IsDsIntegrated | Out-File $loc$doc -Append
 
-# Get DNS Forwarders
-Write-Output ">>>> DNS FORWARDERS <<<<" | Out-File $loc’Active_Directory_LDI.txt’ -Append
-Get-DnsServerForwarder -ComputerName $dc_servername | Select-Object IPAddress | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET DNS FORWARDERS
+Write-Output ">>>> DNS FORWARDERS <<<<" | Out-File $loc$doc -Append
+Get-DnsServerForwarder -ComputerName $dc_servername | Select-Object IPAddress | Out-File $loc$doc -Append
 
-# Get Condicional Forwarders
-Write-Output ">>>> CONDITIONAL FORWARDERS <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# GET CONDITIONAL FORWARDERS
+Write-Output ">>>> CONDITIONAL FORWARDERS <<<<" "`n" | Out-File $loc$doc -Append
 $list = (Get-ADForest).GlobalCatalogs
 $list | ForEach-Object {
 	$dcname = $_
 	$dcname
 	Get-WmiObject -computername $dcname -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Zone -Filter "ZoneType = 4" | Select-Object -Property @{n='Name';e={$_.ContainerName}}, @{n='DsIntegrated';e={$_.DsIntegrated}}, @{n='MasterServers';e={([string]::Join(',', $_.MasterServers))}} | Format-Table 
-} | Out-File $loc’Active_Directory_LDI.txt’ -Append
+} | Out-File $loc$doc -Append
 
 
 
@@ -219,22 +228,22 @@ $list | ForEach-Object {
 
 ##### GPOs INFO #####
 
-Write-Output  "`n" "************ GPOs INFO ***********" "`n" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+Write-Output  "`n" "************ GPOs INFO ***********" "`n" "`n" | Out-File $loc$doc -Append
 
-# Get GPOs
-Write-Output ">>>> GPOs (Export to gpos.csv) <<<<" "`n" | Out-File  $loc’Active_Directory_LDI.txt’ -Append
+# GET GPOs
+Write-Output ">>>> GPOs (Export to gpos.csv) <<<<" "`n" | Out-File  $loc$doc -Append
 Get-GPO -All | Select-Object displayname,gpostatus,creationtime,modificationtime | Export-CSV $loc\gpos.csv -NoTypeInformation -Encoding Unicode
 
-# Export GPOs to HTML
-Write-Output ">>>> GPOs IN HTML FORMAT (Folder GPOs_HTML) <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# EXPORT GPOs TO HTML
+Write-Output ">>>> GPOs IN HTML FORMAT (Folder GPOs_HTML) <<<<" "`n" | Out-File $loc$doc -Append
 New-Item -ItemType Directory -Force -Path $loc’GPOs_HTML’
 Get-GPO -all | ForEach-Object { Get-GPOReport -GUID $_.id -ReportType HTML -Path "$loc\GPOs_HTML\$($_.displayName).html" }
 
-# Backup GPOs
-Write-Output ">>>> BACKUP GPOs (Folder GPOs_BK) <<<<" "`n" | Out-File $loc’Active_Directory_LDI.txt’ -Append
+# BACKUP GPOs
+Write-Output ">>>> BACKUP GPOs (Folder GPOs_BK) <<<<" "`n" | Out-File $loc$doc -Append
 New-Item -ItemType Directory -Force -Path $loc\GPOs_BK
 Get-GPO -All | Backup-GPO -Path $loc\GPOs_BK
 
 
-#Stop Event Log
+#STOP EVENT LOG
 Stop-Transcript
