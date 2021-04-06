@@ -51,10 +51,10 @@ Import-Module grouppolicy
 
 
 # CREATE FOLDER WHERE THE INFORMATION WILL BE STORED
-New-Item "C:\AD_LDI\" -itemType Directory
+New-Item $loc -itemType Directory
 
 # START EVENT LOG
-Start-Transcript ("C:\AD_LDI\ad_ldi_Log {0:yyyyMMdd - HHmm}.txt" -f (Get-Date))
+Start-Transcript -Path $loc’ad_ldi_log.txt’
 
 
 ##### ACTIVE DIRECTORY INFO #####
