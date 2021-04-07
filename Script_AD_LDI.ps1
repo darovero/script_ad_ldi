@@ -36,12 +36,12 @@
 $loc = "C:\AD_LDI\"
 # Define the file name with extension .txt
 $doc = "Active_Directory_LDI.txt"
-# Define the OU organizational unit or the tree root where users are stored. You must enter the Distinguished Names (example: Tree Root "DC = ivti, DC = loc" or OU specifies "OU = Bogota, DC = ivti, DC = loc")
-$dn_users = ‘OU=Bogota,DC=ivti,DC=loc’
-# Define the OU organizational unit or the tree root where computers are stored. You must enter the Distinguished Names (example: Tree Root "DC = ivti, DC = loc" or OU specifies "OU = Bogota, DC = ivti, DC = loc")
-$dn_computers = ‘OU=Bogota,DC=ivti,DC=loc’
-# Define the OU organizational unit or the tree root of the structure of the OUs. You must enter the Distinguished Names (example: Tree Root "DC = ivti, DC = loc" or OU specifies "OU = Servers, DC = ivti, DC = loc")
-$ous_structure = ‘OU=Servers,DC=ivti,DC=loc’
+# Define the OU organizational unit or the tree root where users are stored. You must enter the Distinguished Names (example: Tree Root "DC=ivti,DC=loc" or OU specifies "OU=Bogota,DC=ivti,DC=loc")
+$dn_users = "OU=Bogota,DC=ivti,DC=loc"
+# Define the OU organizational unit or the tree root where computers are stored. You must enter the Distinguished Names (example: Tree Root "DC=ivti,DC=loc" or OU specifies "OU=Bogota,DC=ivti,DC=loc")
+$dn_computers = "OU=Bogota,DC=ivti,DC=loc"
+# Define the OU organizational unit or the tree root of the structure of the OUs. You must enter the Distinguished Names (example: Tree Root "DC=ivti,DC=loc" or OU specifies "OU=Servers,DC=ivti,DC=loc")
+$ous_structure = "OU=Servers,DC=ivti,DC=loc"
 # Define the Domain Controller to which you are going to connect to extract the information (It is recommended that it be the DC that has the FSMO PDC Role).
 $dc_servername = "dc1601.ivti.loc"
 
