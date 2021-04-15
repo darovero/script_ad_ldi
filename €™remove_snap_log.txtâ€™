@@ -1,0 +1,123 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20210414135653
+Username: LAPTOP-GVN5563U\darovero
+RunAs User: LAPTOP-GVN5563U\darovero
+Configuration Name: 
+Machine: LAPTOP-GVN5563U (Microsoft Windows NT 10.0.19042.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command Import-Module 'c:\Users\darovero\.vscode\extensions\ms-vscode.powershell-2021.2.2\modules\PowerShellEditorServices\PowerShellEditorServices.psd1'; Start-EditorServices -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '2021.2.2' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath 'c:\Users\darovero\.vscode\extensions\ms-vscode.powershell-2021.2.2\modules' -EnableConsoleRepl -StartupBanner '=====> PowerShell Integrated Console v2021.2.2 <=====
+' -LogLevel 'Normal' -LogPath 'c:\Users\darovero\.vscode\extensions\ms-vscode.powershell-2021.2.2\logs\1618066876-31d28178-7334-40ce-9134-4cff7ceb0f421618066871805\EditorServices.log' -SessionDetailsPath 'c:\Users\darovero\.vscode\extensions\ms-vscode.powershell-2021.2.2\sessions\PSES-VSCode-14876-711231' -FeatureFlags @() 
+Process ID: 12756
+PSVersion: 5.1.19041.906
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.906
+BuildVersion: 10.0.19041.906
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is €™remove_snap_log.txtâ€™
+PS>TerminatingError(Out-File): "Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'."
+Out-File : Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:29 char:81
++ ... owing are the VMs that have Snapshots: ****" "`n" | Out-File $loc$doc
++                                                         ~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+Out-File : Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:29 char:81
++ ... owing are the VMs that have Snapshots: ****" "`n" | Out-File $loc$doc
++                                                         ~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+
+Get-VM : The term 'Get-VM' is not recognized as the name of a cmdlet, function, script file, or operable program. Check 
+the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:30 char:18
++ $snap_validate = Get-VM | Get-Snapshot | Select-Object vm,vmid,name,c ...
++                  ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-VM:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+Get-VM : The term 'Get-VM' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a
+path was included, verify that the path is correct and try again.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:30 char:18
++ $snap_validate = Get-VM | Get-Snapshot | Select-Object vm,vmid,name,c ...
++                  ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-VM:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+>> TerminatingError(Out-File): "Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'."
+Out-File : Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:32 char:54
++ ... e-Output ("No exists VMs with Snapshot")  | Out-File $loc$doc -Append
++                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+Out-File : Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:32 char:54
++ ... e-Output ("No exists VMs with Snapshot")  | Out-File $loc$doc -Append
++                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+
+>> TerminatingError(Out-File): "Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'."
+Out-File : Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:39 char:131
++ ... ny to remove the Snapshot ****" "`n" "`n" | Out-File $loc$doc -Append
++                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+Out-File : Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:39 char:131
++ ... ny to remove the Snapshot ****" "`n" "`n" | Out-File $loc$doc -Append
++                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+
+Get-VM : The term 'Get-VM' is not recognized as the name of a cmdlet, function, script file, or operable program. Check 
+the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:40 char:13
++ $vms_snap = Get-VM  | Get-Snapshot | Where-Object { $_.Created -lt $v ...
++             ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-VM:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+Get-VM : The term 'Get-VM' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a
+path was included, verify that the path is correct and try again.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:40 char:13
++ $vms_snap = Get-VM  | Get-Snapshot | Where-Object { $_.Created -lt $v ...
++             ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-VM:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+>> TerminatingError(Out-File): "Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'."
+Out-File : Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:42 char:64
++ ... "No exists VMs with Snapshot for delete") | Out-File $loc$doc -Append
++                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+Out-File : Could not find a part of the path 'C:\VMware_Snap\VMware_Snap.txt'.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:42 char:64
++ ... "No exists VMs with Snapshot for delete") | Out-File $loc$doc -Append
++                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+
+Rename-Item : Cannot rename because item at 'C:\VMware_Snap\VMware_Snap.txt' does not exist.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:53 char:1
++ Rename-Item $loc$doc -NewName $filenameFormat -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [Rename-Item], PSInvalidOperationException
+    + FullyQualifiedErrorId : InvalidOperation,Microsoft.PowerShell.Commands.RenameItemCommand
+Rename-Item : Cannot rename because item at 'C:\VMware_Snap\VMware_Snap.txt' does not exist.
+At D:\Documents\git_darovero\script_vmware_remoe_snap\script_remove_snap.ps1:53 char:1
++ Rename-Item $loc$doc -NewName $filenameFormat -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [Rename-Item], PSInvalidOperationException
+    + FullyQualifiedErrorId : InvalidOperation,Microsoft.PowerShell.Commands.RenameItemCommand
+
+**********************
+Windows PowerShell transcript end
+End time: 20210414135654
+**********************

@@ -51,7 +51,7 @@ Import-Module grouppolicy
 
 
 # CREATE FOLDER WHERE THE INFORMATION WILL BE STORED
-New-Item $loc -itemType Directory
+if ((Test-Path -Path $loc -PathType Container) -eq $false) {New-Item -Type Directory -Force -Path $loc}
 
 # START EVENT LOG
 Start-Transcript -Path $loc’ad_ldi_log.txt’
