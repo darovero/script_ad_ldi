@@ -11,7 +11,7 @@ This script provides information about Active Directory, DNS, GPOs:
 * Get Domain
 * Get Domain Controllers
 * Get Optional Features
-* Get OUs Structure
+* Get Structure OUs
 * Get Users
 * Get Computers
 * Get Groups and Members
@@ -31,3 +31,4 @@ This script provides information about Active Directory, DNS, GPOs:
 * Get GPOs
 * Export GPOs to HTML
 * Backup GPOs
+* Link Path GPOs
