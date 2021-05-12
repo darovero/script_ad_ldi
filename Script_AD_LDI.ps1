@@ -48,20 +48,18 @@ $structure_ous = "OU=Servers,DC=ivti,DC=loc"
 # Define the Domain Controller to which you are going to connect to extract the information (It is recommended that it be the DC that has the FSMO PDC Role).
 $dc_servername = "dc1601.ivti.loc"
 
+# START EVENT LOG
+Start-Transcript -Path $loc’ad_ldi_log.txt’
+
 # IMPORT MODULES FROM ACTIVE DIRECTORY AND GROUP POLICY
 Import-Module activedirectory
 Import-Module grouppolicy
-
 
 # CREATE FOLDER WHERE THE INFORMATION WILL BE STORED
 if ((Test-Path -Path $loc -PathType Container) -eq $false) {New-Item -Type Directory -Force -Path $loc}
 New-Item -ItemType Directory -Force -Path $loc\AD\
 New-Item -ItemType Directory -Force -Path $loc\DNS\
 New-Item -ItemType Directory -Force -Path $loc\GPOs\
-
-# START EVENT LOG
-Start-Transcript -Path $loc’ad_ldi_log.txt’
-
 
 ##### ACTIVE DIRECTORY INFO #####
 
