@@ -57,6 +57,7 @@ Import-Module grouppolicy
 
 # CREATE FOLDER WHERE THE INFORMATION WILL BE STORED
 if ((Test-Path -Path $loc -PathType Container) -eq $false) {New-Item -Type Directory -Force -Path $loc}
+New-Item -ItemType Directory -Force -Path $loc
 New-Item -ItemType Directory -Force -Path $loc\AD\
 New-Item -ItemType Directory -Force -Path $loc\DNS\
 New-Item -ItemType Directory -Force -Path $loc\GPOs\
