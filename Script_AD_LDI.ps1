@@ -18,12 +18,12 @@
 # * Get Site Link
 # * Get ADTrust
 # * Get NTP
-#
+
 ##### DNS INFO #####
 # * Get DNS Zones
 # * Get DNS Forwarders
 # * Get Conditional Forwarders
-#
+
 ##### GPOs INFO #####
 # * Get GPOs
 # * Export GPOs to HTML
